@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Smart Water Tank Dashboard</title>
+<link rel="stylesheet" href="style.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+</head>
+<body>
+  <header>
+    <h1>💧 Smart Water Tank Monitor</h1>
+    <button id="themeToggle" class="icon-btn" title="Toggle theme">🌙</button>
+    <button id="soundToggle" class="icon-btn" title="Toggle alert sound">🔊</button>
+    <span id="connectionDot" class="dot offline"></span>
+    <span id="connectionLabel">Connecting…</span>
+  </header>
+
+  <main>
+    <div id="alertBanner" class="alert-banner hidden"></div>
+
+    <section class="card tank-card">
+      <div class="tank-visual">
+        <div class="tank-shell">
+          <div id="tankFill" class="tank-fill"></div>
+        </div>
+        <div id="levelReadout" class="level-readout">--%</div>
+      </div>
+      <div class="tank-meta">
+        <div><span class="label">Distance</span><span id="distanceValue">--</span> cm</div>
+        <div><span class="label">Last update</span><span id="lastUpdate">--</span></div>
+        <div><span class="label">Pump</span><span id="pumpBadge" class="badge">--</span></div>
+        <div><span class="label">Est. time to next threshold</span><span id="etaValue">--</span></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Control</h2>
+      <div class="control-row">
+        <span class="label">Mode</span>
+        <div class="toggle-group">
+          <button id="autoBtn" class="toggle-btn">Auto</button>
+          <button id="manualBtn" class="toggle-btn">Manual</button>
+        </div>
+      </div>
+
+      <div class="control-row">
+        <span class="label">Manual pump</span>
+        <div class="toggle-group">
+          <button id="pumpOnBtn" class="toggle-btn">ON</button>
+          <button id="pumpOffBtn" class="toggle-btn">OFF</button>
+        </div>
+      </div>
+
+      <div class="control-row">
+        <span class="label">Low threshold (%)</span>
+        <input id="lowThreshold" type="number" min="0" max="100" step="1" />
+      </div>
+      <div class="control-row">
+        <span class="label">High threshold (%)</span>
+        <input id="highThreshold" type="number" min="0" max="100" step="1" />
+      </div>
+      <button id="saveSettingsBtn" class="save-btn">Save settings</button>
+      <p id="settingsStatus" class="status-msg"></p>
+    </section>
+
+    <section class="card wide stats-card">
+      <h2>Today's stats</h2>
+      <div class="stats-grid">
+        <div class="stat-box">
+          <span class="stat-value" id="statMin">--</span>
+          <span class="stat-label">Min level</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-value" id="statMax">--</span>
+          <span class="stat-label">Max level</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-value" id="statAvg">--</span>
+          <span class="stat-label">Avg level</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-value" id="statPumpMinutes">--</span>
+          <span class="stat-label">Pump runtime</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-value" id="statCycles">--</span>
+          <span class="stat-label">Pump cycles</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="card wide">
+      <div class="history-header">
+        <h2>Level history</h2>
+        <button id="exportCsvBtn" class="export-btn">⬇ Export CSV</button>
+      </div>
+      <canvas id="historyChart" height="90"></canvas>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
